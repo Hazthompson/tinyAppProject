@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Hazthompson/tinyAppProject/issues"
   },
-  "homepage": "https://github.com/Hazthompson/tinyAppProject#readme"
+  "homepage": "https://github.com/Hazthompson/tinyAppProject#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
 }
