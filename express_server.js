@@ -21,6 +21,11 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+app.get("/urls", (req, res) => {
+  let templateVars = { urls: urlDatabase }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed.
+  res.render("urls_index", templateVars);
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
