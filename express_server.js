@@ -68,6 +68,17 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/urls/:shortURL/update", (req, res) => {
+  const shortURL = req.params.shortURL;
+  console.log(shortURL);
+  let longURLUpdated = req.body.updatedLongURL;
+  console.log(longURLUpdated);
+  urlDatabase[shortURL] = longURLUpdated;
+
+  res.redirect("/urls");
+  //res.render("urls/" + shortURL); //go back to URL page and should show updated long URL
+});
+
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
     shortURL: req.params.shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
