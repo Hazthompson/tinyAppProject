@@ -15,13 +15,13 @@ const urlDatabase = {
 
 let generatedShort = function generateRandomString() {
   let result           = '';
-   let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   let charactersLength = characters.length;
-   for (let i = 0; i < 6; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
+  let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let charactersLength = characters.length;
+  for (let i = 0; i < 6; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
 
 
 //console.log(generateRandomString());
@@ -49,11 +49,20 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-const newShort = generatedShort()
-  urlDatabase[newShort] = req.body.longURL
+  const newShort = generatedShort();
+  urlDatabase[newShort] = req.body.longURL;
   console.log(urlDatabase);
   //console.log(generatedShort());  // Log the POST request body to the console
   res.redirect("/urls/" + newShort);         // Respond with 'Ok' (we will replace this)
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  // let templateVars = {
+  //   shortURL: req.params.shortURL
+  //   longURL: urlDatabase['req.params.shortURL']
+  // }
+  console.log(req.params.shortURL)
+  res.redirect(urlDatabase[req.params.shortURL]);
 });
 
 app.get("/urls/:shortURL", (req,res) => {
