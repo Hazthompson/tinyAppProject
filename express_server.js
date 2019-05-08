@@ -1,8 +1,12 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
+const morgan = require('morgan');
+const bodyParser = require("body-parser");
 
 app.set('view engine', 'ejs');
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended: true}));
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -22,13 +26,22 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed.
+  let templateVars = { urls: urlDatabase }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
   res.render("urls_index", templateVars);
+});
+
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
+
+app.post("/urls", (req, res) => {
+  console.log(req.body);  // Log the POST request body to the console
+  res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
 app.get("/urls/:shortURL", (req,res) => {
   let templateVars = {
-    shortURL: req.params.shortURL,
+    shortURL: req.params.shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
     longURL: urlDatabase[req.params.shortURL],
   };
   res.render("urls_show", templateVars);
