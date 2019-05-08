@@ -13,7 +13,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-function generateRandomString() {
+let generatedShort = function generateRandomString() {
   let result           = '';
    let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
    let charactersLength = characters.length;
@@ -49,8 +49,11 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+const newShort = generatedShort()
+  urlDatabase[newShort] = req.body.longURL
+  console.log(urlDatabase);
+  //console.log(generatedShort());  // Log the POST request body to the console
+  res.redirect("/urls/" + newShort);         // Respond with 'Ok' (we will replace this)
 });
 
 app.get("/urls/:shortURL", (req,res) => {
