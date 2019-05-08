@@ -9,14 +9,11 @@
   <title>TinyApp</title>
 </head>
 <body style="font-size:20px; padding:50px;">
-  <p>
-    ShortURL = <%= shortURL %>
-    <br />
-    LongURL = <%= longURL %>
-  </p>
+  <%- include partials/_header %>
 
+  <h3>ShortURL for <%= longURL %></h3>
   <p>
-    <a href="#" class="btn btn-primary">Shorten a URL</a>
+    <%= shortURL %>
   </p>
 </body>
 </html>
