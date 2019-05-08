@@ -9,6 +9,14 @@
   <title>TinyApp</title>
 </head>
 <body style="font-size:20px; padding:50px;">
-    <!-- Add EJS code here -->
+  <ul>
+    <% for (let shortURL in urls) { %>
+        <li><%= shortURL %> - <%= urls[shortURL] %></li>
+    <% } %>
+  </ul>
+
+  <p>
+    <a href="#" class="btn btn-primary">Shorten a URL</a>
+  </p>
 </body>
 </html>
