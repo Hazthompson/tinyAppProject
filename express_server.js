@@ -3,13 +3,15 @@ const app = express();
 const PORT = 8080; // default port 8080
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
+  b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
@@ -39,12 +41,24 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
+  let templateVars = {
+  username: req.cookies["username"],
+  urls: urlDatabase
+  }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
   res.render("urls_index", templateVars);
 });
 
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username);
+  console.log(res.cookie);
+  res.redirect("/urls");
+});
+
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+  username: req.cookies["username"]
+  };
+  res.render("urls_new",templateVars);
 });
 
 app.post("/urls", (req, res) => {
@@ -81,6 +95,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
+    username: req.cookies["username"],
     shortURL: req.params.shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
     longURL: urlDatabase[req.params.shortURL]
   };
