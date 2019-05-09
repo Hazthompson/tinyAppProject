@@ -3,18 +3,18 @@
 
 <% if (!username) { %>
 
-<form method="POST" action=<%=`/login`%>>
+  <form method="POST" action=<%=`/login`%>>
     <p> Username: <input type="text" name="username"> </p>
     <input type="submit" class="btn btn-primary" >
-    </form>
+  </form>
     <br/>
 
-  <% } else { %>
+<% } else { %>
 
   <p> Logged in as: <%=username%> </p>
   <form method="POST" action=<%=`/logout`%>>
-  <button class="btn btn-primary"> logout </button>
-  </form>
+    <button class="btn btn-primary"> logout </button>
+    </form>
   <br/>
 <% } %>
 

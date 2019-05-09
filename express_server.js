@@ -16,6 +16,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
+
 let generatedShort = function generateRandomString() {
   let result = "";
   let characters =
@@ -41,6 +54,27 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+app.get("/register", (req,res) => {
+ res.render("urls_registration");
+});
+
+app.post("/register", (req,res) => {
+  let templateVars= {
+    usersDatabase: users
+  };
+  const id = generatedShort();
+  const email = req.body.email;
+  const password = req.body.password;
+  users[id] = {
+    id: id,
+    email: email,
+    password: password};
+  if (!req.cookies) {
+  res.cookie(cookieKey, id);}
+  console.log(req.cookies);
+  res.redirect("/urls");
+})
+
 app.get("/urls", (req, res) => {
   let templateVars = {
   username: req.cookies[cookieKey],
@@ -48,6 +82,7 @@ app.get("/urls", (req, res) => {
   }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
   res.render("urls_index", templateVars);
 });
+
 
 app.post("/login", (req, res) => {
   res.cookie(cookieKey, req.body.username);
