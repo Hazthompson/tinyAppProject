@@ -105,6 +105,9 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+app.get("/login", (req, res) => {
+  res.render("urls_login");
+});
 
 app.post("/login", (req, res) => {
   res.cookie(cookieKey, req.body.username);
