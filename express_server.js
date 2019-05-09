@@ -10,6 +10,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+const cookieKey = "username"
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -42,26 +43,26 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
   let templateVars = {
-  username: req.cookies["username"],
+  username: req.cookies[cookieKey],
   urls: urlDatabase
   }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
   res.render("urls_index", templateVars);
 });
 
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
+  res.cookie(cookieKey, req.body.username);
   console.log(res.cookie);
   res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username"); //how do i get the name of current cookie?
+  res.clearCookie(cookieKey); //how do i get the name of current cookie?
   res.redirect("/urls");
 });
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-  username: req.cookies["username"]
+  username: req.cookies[cookieKey]
   };
   res.render("urls_new",templateVars);
 });
@@ -100,7 +101,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    username: req.cookies[cookieKey],
     shortURL: req.params.shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
     longURL: urlDatabase[req.params.shortURL]
   };
