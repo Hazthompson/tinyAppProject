@@ -10,24 +10,24 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const cookieKey = "username"
+const cookieKey = "username";
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
 const users = {
-  "userRandomID": {
+  userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
+  user2RandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk"
   }
-}
+};
 
 let generatedShort = function generateRandomString() {
   let result = "";
@@ -39,6 +39,16 @@ let generatedShort = function generateRandomString() {
   }
   return result;
 };
+
+function emailDoesNoteExist(users, email) {
+  for (var key in users) {
+    console.log(users[key].email);
+    if (users[key].email === email) {
+      return false;
+    }
+    return true;
+  }
+}
 
 //console.log(generateRandomString());
 
@@ -54,35 +64,47 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-app.get("/register", (req,res) => {
- res.render("urls_registration");
+app.get("/register", (req, res) => {
+  res.render("urls_registration");
 });
 
-app.post("/register", (req,res) => {
-  let templateVars= {
+app.post("/register", (req, res) => {
+  let templateVars = {
     usersDatabase: users
   };
+
   const id = generatedShort();
   const email = req.body.email;
   const password = req.body.password;
-  users[id] = {
-    id: id,
-    email: email,
-    password: password};
+
+  if (email === "" || password === "") {
+    res.status(400).send("Not Found. Please enter both email & password.");
+  } else if (!emailDoesNoteExist(users, email)) {
+    res
+      .status(400)
+      .send("Your email address already exists! Please login rather register.");
+  } else {
+    users[id] = {
+      id: id,
+      email: email,
+      password: password
+    };
+  }
+
   if (!req.cookies) {
-  res.cookie(cookieKey, id);}
-  console.log(req.cookies);
+    res.cookie(cookieKey, id);
+  }
+
   res.redirect("/urls");
-})
+});
 
 app.get("/urls", (req, res) => {
   let templateVars = {
-  username: req.cookies[cookieKey],
-  urls: urlDatabase
+    username: req.cookies[cookieKey],
+    urls: urlDatabase
   }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
   res.render("urls_index", templateVars);
 });
-
 
 app.post("/login", (req, res) => {
   res.cookie(cookieKey, req.body.username);
@@ -97,9 +119,9 @@ app.post("/logout", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-  username: req.cookies[cookieKey]
+    username: req.cookies[cookieKey]
   };
-  res.render("urls_new",templateVars);
+  res.render("urls_new", templateVars);
 });
 
 app.post("/urls", (req, res) => {
