@@ -54,6 +54,11 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/logout", (req, res) => {
+  res.clearCookie("username"); //how do i get the name of current cookie?
+  res.redirect("/urls");
+});
+
 app.get("/urls/new", (req, res) => {
   let templateVars = {
   username: req.cookies["username"]

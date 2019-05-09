@@ -1,14 +1,24 @@
 
-<h1>URL Shortener</h1>
+<h1>TinyApp</h1>
 
-<p> <%=username%> </p>
+<% if (!username) { %>
 
 <form method="POST" action=<%=`/login`%>>
     <p> username: <input type="text" name="username"> </p>
     <input type="submit">
+    </form>
+
+  <% } else { %>
+
+  <p> <%=username%> </p>
+  <form method="POST" action=<%=`/logout`%>>
+    <button> logout </button>
+    <input type="submit">
   </form>
 
+<% } %>
 
-<p>
+<!-- Might not need this bottom section? Check other pages to see if it should be on one of the others -->
+<!-- <p>
   <a href="#" class="btn btn-primary">Create new Short URL</a>
-</p>
+</p> -->
