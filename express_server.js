@@ -13,8 +13,8 @@ app.use(cookieParser());
 const cookieKey = "user_id";
 
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 const users = {
@@ -194,12 +194,20 @@ app.post("/urls/:shortURL/update", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  const user = users[req.cookies[cookieKey]];
+  const shortURL = req.params.shortURL;
+  const urlObject = urlDatabase[shortURL];
+
+if (urlObject) { //look into this again
   let templateVars = {
-    user: users[req.cookies[cookieKey]],
-    shortURL: req.params.shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
-    longURL: urlDatabase[req.params.shortURL]
+    user: user,
+    shortURL: shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
+    longURL: urlObject.longURL
   };
   res.render("urls_show", templateVars);
+} else{
+  res.status(404).send("Short URL not found.");
+}
 });
 
 app.listen(PORT, () => {

@@ -11,12 +11,24 @@
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header %>
 
+<% if (user) { %>
+
   <ul>
     <% for (let shortURL in urls) { %>
-        <li><%= shortURL %> - <%= urls[shortURL] %> </li>
+        <li><%= shortURL %> - <%= urls[shortURL].longURL %> </li>
         <form method="POST" action=<%=`/urls/${shortURL}/delete`%>><button class="btn btn-primary">Delete</button></form>
 
     <% } %>
   </ul>
+
+<% } else { %>
+
+  <p>
+    Your need to login to view this page!
+    <a href="/login">Please login here</a>
+  </p>
+
+<% } %>
+
 </body>
 </html>
