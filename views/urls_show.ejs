@@ -11,14 +11,23 @@
 <body style="font-size:20px; padding:50px;">
   <%- include partials/_header %>
 
-  <h3>ShortURL for <%= longURL %></h3>
-    <%= shortURL %>
-  <form method="POST" action=<%=`/urls/${shortURL}/update`%>>
-    <p> Update long URL <input type="text" name="updatedLongURL"> </p>
-    <input type="submit">
-  </form>
-  <p>
+  <% if (user) { %>
 
-  </p>
+    <h3>ShortURL for <%= longURL %></h3>
+      <%= shortURL %>
+    <form method="POST" action=<%=`/urls/${shortURL}/update`%>>
+      <p> Update long URL <input type="text" name="updatedLongURL"> </p>
+      <input type="submit">
+    </form>
+
+  <% } else { %>
+
+    <p>
+      Your need to login to view this page!
+      <a href="/login">Please login here</a>
+    </p>
+
+  <% } %>
+
 </body>
 </html>

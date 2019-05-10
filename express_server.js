@@ -215,16 +215,18 @@ app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const urlObject = urlDatabase[shortURL];
 
-if (urlObject) { //look into this again
-  let templateVars = {
-    user: user,
-    shortURL: shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
-    longURL: urlObject.longURL
-  };
-  res.render("urls_show", templateVars);
-} else{
-  res.status(404).send("Short URL not found.");
-}
+  if (!urlObject) { //look into this again
+    res.status(404).send("Short URL not found.");
+  } else if (user && urlObject.userID !== user.id) {
+    res.status(401).send("You don't have permisson to view this page.");
+  } else {
+    let templateVars = {
+      user: user,
+      shortURL: shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
+      longURL: urlObject.longURL
+    };
+    res.render("urls_show", templateVars);
+  }
 });
 
 app.listen(PORT, () => {
