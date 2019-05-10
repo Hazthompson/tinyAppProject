@@ -197,17 +197,30 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
+  const user = users[req.cookies[cookieKey]];
   const shortURL = req.params.shortURL;
-  console.log(shortURL);
-  delete urlDatabase[shortURL]; // delete from the DB
+  const urlObject = urlDatabase[shortURL];
+
+  if (user && urlObject.userID === user.id) {
+    delete urlDatabase[shortURL]; // delete from the DB
+  } else {
+    res.status(401).send("You don't have permisson for this action.");
+  }
 
   res.redirect("/urls");
 });
 
 app.post("/urls/:shortURL/update", (req, res) => {
+  const user = users[req.cookies[cookieKey]];
   const shortURL = req.params.shortURL;
-  let longURLUpdated = req.body.updatedLongURL;
-  urlDatabase[shortURL].longURL = longURLUpdated;
+  const urlObject = urlDatabase[shortURL];
+
+  if (user && urlObject.userID === user.id) {
+    let longURLUpdated = req.body.updatedLongURL;
+    urlObject.longURL = longURLUpdated;
+  } else {
+    res.status(401).send("You don't have permisson for this action.");
+  }
 
   res.redirect("/urls");
   //res.render("urls/" + shortURL); //go back to URL page and should show updated long URL
