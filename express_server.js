@@ -63,12 +63,14 @@ function emailDoesNotExist(users, email) {
 
 function passwordEmailValidation(users, password, email) {
   for (var key in users) {
-    if (users[key].email === email && users[key].password === password) {
+    if (users[key].email === email && users[key].password === password) //call if as function {
+      //but hashed!!!
       return true;
     }
-  }
   return false;
 }
+
+
 
 
 
@@ -93,7 +95,6 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = bcrypt.hashSync(req.body.password,12);
 
-  debugger
   if (email === "" || password === "") {
     res.status(400).send("Not Found. Please enter both email & password.");
   } else if (!emailDoesNotExist(users, email)) {
@@ -136,6 +137,8 @@ app.get("/login", (req, res) => {
   res.render("urls_login", templateVars);
 });
 
+
+
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -155,13 +158,17 @@ app.post("/login", (req, res) => {
     res
       .status(403)
       .send("Your email address does not exist! Please register than login.");
-  } else if (!passwordEmailValidation(users, password, email)) {
+  } else if (!bcrypt.compareSync(password, users[id].password)) {
     res.status(403).send("your email address or password is incorrect!");
   } else {
     res.cookie(cookieKey, id)
     res.redirect("/urls");
   }
+
 });
+
+
+
 
 app.post("/logout", (req, res) => {
   res.clearCookie(cookieKey); //how do i get the name of current cookie?
