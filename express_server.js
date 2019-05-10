@@ -19,7 +19,6 @@ app.use(cookieSession({
   keys: ['key1', 'key2']
 }));
 
-const cookieKey = "user_id";
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
@@ -68,17 +67,6 @@ function emailDoesNotExist(users, email) {
   }
    return true;
 }
-
-function passwordEmailValidation(users, password, email) {
-  for (var key in users) {
-    if (users[key].email === email && users[key].password === password) //call if as function {
-      //but hashed!!!
-      return true;
-    }
-  return false;
-}
-
-
 
 
 
@@ -131,6 +119,7 @@ app.get("/urls", (req, res) => {
   if (user) {
     urls = urlsForUser(user.id);
   }
+
   let templateVars = {
     user: user,
     urls: urls
