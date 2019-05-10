@@ -51,6 +51,17 @@ function emailDoesNoteExist(users,email) {
 }
 };
 
+function passwordEmailValidation(users,password,email) {
+    for (var key in users) {
+  console.log(users[key].email)
+  console.log(users[key].password)
+  if (users[key].email === email && users[key].password === password) {
+    return true
+  }
+  return false;
+}
+};
+
 //console.log(generateRandomString());
 
 app.get("/", (req, res) => {
@@ -79,7 +90,7 @@ app.post("/register", (req,res) => {
       res.status(400).send("Not Found. Please enter both email & password.")
 
     } else if (!emailDoesNoteExist(users,email)) {
-      res.status(400).send("Your email address already exists! Please login rather register.")
+      res.status(400).send("Your email address already exists! Please login rather than register.")
     } else {
 
       users[id] = {
@@ -106,14 +117,61 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("urls_login");
+  let templateVars = {
+    userDatabase : users,
+    user: users[req.cookies[cookieKey]],
+    urls: urlDatabase
+  };
+  res.render("urls_login", templateVars);
 });
 
+
+
+
+
 app.post("/login", (req, res) => {
-  res.cookie(cookieKey, req.body.username);
+
+  const id = generatedShort(); //how do i go back to find username key of email I have
+  const email = req.body.email;
+  const password = req.body.password;
+
+  console.log(email, password)
+
+if (emailDoesNoteExist(users,email)) {
+  res.status(403).send("Your email address does not exist! Please register than login.")
+} else if (!passwordEmailValidation(users,password,email)) {
+  res.status(403).send("your email address or password is incorrect!");
+} else {
+
+
+
+  res.cookie(cookieKey, id);
   console.log(res.cookie);
+
+
+
+
+
   res.redirect("/urls");
+}
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.post("/logout", (req, res) => {
   res.clearCookie(cookieKey); //how do i get the name of current cookie?
