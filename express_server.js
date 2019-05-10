@@ -10,7 +10,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const cookieKey = "user_id"
+const cookieKey = "user_id";
 
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
@@ -18,17 +18,17 @@ const urlDatabase = {
 };
 
 const users = {
-  "userRandomID": {
+  userRandomID: {
     id: "userRandomID",
     email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
+  user2RandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk"
   }
-}
+};
 
 let generatedShort = function generateRandomString() {
   let result = "";
@@ -41,28 +41,24 @@ let generatedShort = function generateRandomString() {
   return result;
 };
 
-function emailDoesNoteExist(users,email) {
-    for (var key in users) {
-  console.log(users[key].email)
-  if (users[key].email === email){
-    return false
+function emailDoesNotExist(users, email) {
+  for (var key in users) {
+    if (users[key].email === email) {
+      return false;
+    }
   }
-  return true;
+   return true;
 }
-};
 
-function passwordEmailValidation(users,password,email) {
-    for (var key in users) {
-  console.log(users[key].email)
-  console.log(users[key].password)
-  if (users[key].email === email && users[key].password === password) {
-    return true
+function passwordEmailValidation(users, password, email) {
+  for (var key in users) {
+    if (users[key].email === email && users[key].password === password) {
+      return true;
+    }
   }
   return false;
 }
-};
 
-//console.log(generateRandomString());
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -76,41 +72,39 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-app.get("/register", (req,res) => {
- res.render("urls_registration");
+app.get("/register", (req, res) => {
+  res.render("urls_registration");
 });
 
-app.post("/register", (req,res) => {
-
+app.post("/register", (req, res) => {
   const id = generatedShort();
   const email = req.body.email;
   const password = req.body.password;
 
-  if (email === '' || password === '') {
-      res.status(400).send("Not Found. Please enter both email & password.")
-
-    } else if (!emailDoesNoteExist(users,email)) {
-      res.status(400).send("Your email address already exists! Please login rather than register.")
-    } else {
-
-      users[id] = {
+  if (email === "" || password === "") {
+    res.status(400).send("Not Found. Please enter both email & password.");
+  } else if (!emailDoesNotExist(users, email)) {
+    res
+      .status(400)
+      .send(
+        "Your email address already exists! Please login rather than register."
+      );
+  } else {
+    users[id] = {
       id: id,
       email: email,
-      password: password};
-    }
+      password: password
+    };
+  }
 
-
-  res.cookie(cookieKey, id)
-  //console.log(users[id])
+  res.cookie(cookieKey, id);
 
   res.redirect("/urls");
-
 });
 
 app.get("/urls", (req, res) => {
   let templateVars = {
     user: users[req.cookies[cookieKey]],
-    //username: req.cookies[cookieKey],
     urls: urlDatabase
   }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
   res.render("urls_index", templateVars);
@@ -118,7 +112,7 @@ app.get("/urls", (req, res) => {
 
 app.get("/login", (req, res) => {
   let templateVars = {
-    userDatabase : users,
+    userDatabase: users,
     user: users[req.cookies[cookieKey]],
     urls: urlDatabase
   };
@@ -129,42 +123,35 @@ app.get("/login", (req, res) => {
 
 
 
-app.post("/login", (req, res) => {
 
-  const id = generatedShort(); //how do i go back to find username key of email I have
+app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  console.log(email, password)
+  function getID(users) {
+    for (var key in users) {
+      console.log('key',key)
+      if (users[key].email === email) {
+        return users[key].id;
+      }
+    }
+  }
 
-if (emailDoesNoteExist(users,email)) {
-  res.status(403).send("Your email address does not exist! Please register than login.")
-} else if (!passwordEmailValidation(users,password,email)) {
-  res.status(403).send("your email address or password is incorrect!");
-} else {
+  const id = getID(users);
+  console.log('id', id)
+  if (emailDoesNotExist(users, email)) {
+    res
+      .status(403)
+      .send("Your email address does not exist! Please register than login.");
+  } else if (!passwordEmailValidation(users, password, email)) {
+    res.status(403).send("your email address or password is incorrect!");
+  } else {
+    res.cookie(cookieKey, id)
+    res.redirect("/urls");
+  }
 
-
-
-  res.cookie(cookieKey, id);
-  console.log(res.cookie);
-
-
-
-
-
-  res.redirect("/urls");
-}
 
 });
-
-
-
-
-
-
-
-
-
 
 
 
@@ -180,9 +167,9 @@ app.post("/logout", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-  username: req.cookies[cookieKey]
+    username: req.cookies[cookieKey]
   };
-  res.render("urls_new",templateVars);
+  res.render("urls_new", templateVars);
 });
 
 app.post("/urls", (req, res) => {
