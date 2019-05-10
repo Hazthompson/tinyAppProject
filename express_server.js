@@ -81,6 +81,7 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  debugger
   if (email === "" || password === "") {
     res.status(400).send("Not Found. Please enter both email & password.");
   } else if (!emailDoesNotExist(users, email)) {
@@ -96,9 +97,7 @@ app.post("/register", (req, res) => {
       password: password
     };
   }
-
   res.cookie(cookieKey, id);
-
   res.redirect("/urls");
 });
 
@@ -118,11 +117,6 @@ app.get("/login", (req, res) => {
   };
   res.render("urls_login", templateVars);
 });
-
-
-
-
-
 
 app.post("/login", (req, res) => {
   const email = req.body.email;
@@ -149,16 +143,7 @@ app.post("/login", (req, res) => {
     res.cookie(cookieKey, id)
     res.redirect("/urls");
   }
-
-
 });
-
-
-
-
-
-
-
 
 app.post("/logout", (req, res) => {
   res.clearCookie(cookieKey); //how do i get the name of current cookie?
@@ -166,10 +151,14 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = {
-    user: users[req.cookies[cookieKey]]
-  };
-  res.render("urls_new", templateVars);
+  const user = users[req.cookies[cookieKey]];
+
+  if (user) {
+    let templateVars = { user: user };
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/urls", (req, res) => {
