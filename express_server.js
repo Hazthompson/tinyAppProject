@@ -167,7 +167,7 @@ app.post("/logout", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: req.cookies[cookieKey]
+    user: users[req.cookies[cookieKey]]
   };
   res.render("urls_new", templateVars);
 });
@@ -206,7 +206,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
-    username: req.cookies[cookieKey],
+    user: users[req.cookies[cookieKey]],
     shortURL: req.params.shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
     longURL: urlDatabase[req.params.shortURL]
   };
