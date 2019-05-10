@@ -193,7 +193,14 @@ app.post("/urls", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   //do i need to link this to anything? currently can only access when typed directly to browser?`
   console.log(req.params.shortURL);
-  res.redirect(urlDatabase[req.params.shortURL]);
+
+  const urlObject = urlDatabase[req.params.shortURL];
+
+  if (urlObject) {
+    res.redirect(urlObject.longURL);
+  } else {
+    res.status(404).send('Not found');
+  }
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
