@@ -179,9 +179,14 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+  const user = users[req.cookies[cookieKey]];
+
   const newShort = generatedShort();
-  urlDatabase[newShort] = req.body.longURL;
-  console.log(urlDatabase);
+  urlDatabase[newShort] = {
+    longURL: req.body.longURL,
+    userID: user.id
+  }
+  console.log('urlDatabase', urlDatabase);
   res.redirect("/urls/" + newShort); // Respond with 'Ok' (we will replace this)
 });
 
@@ -201,10 +206,8 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.post("/urls/:shortURL/update", (req, res) => {
   const shortURL = req.params.shortURL;
-  console.log(shortURL);
   let longURLUpdated = req.body.updatedLongURL;
-  console.log(longURLUpdated);
-  urlDatabase[shortURL] = longURLUpdated;
+  urlDatabase[shortURL].longURL = longURLUpdated;
 
   res.redirect("/urls");
   //res.render("urls/" + shortURL); //go back to URL page and should show updated long URL
