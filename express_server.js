@@ -13,8 +13,8 @@ app.use(cookieParser());
 const cookieKey = "user_id";
 
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" }
 };
 
 const users = {
@@ -29,6 +29,16 @@ const users = {
     password: "dishwasher-funk"
   }
 };
+
+function urlsForUser(userId) {
+  let urlsObject = {};
+ for(let shortURL in urlDatabase ) {
+    if (userId === urlDatabase[shortURL].userID) {
+      urlsObject[shortURL] = urlDatabase[shortURL].longURL;
+    }
+  }
+  return urlsObject;
+}
 
 let generatedShort = function generateRandomString() {
   let result = "";
@@ -58,6 +68,7 @@ function passwordEmailValidation(users, password, email) {
   }
   return false;
 }
+
 
 
 app.get("/", (req, res) => {
@@ -102,9 +113,15 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const user = users[req.cookies[cookieKey]];
+
+  let urls;
+  if (user) {
+    urls = urlsForUser(user.id);
+  }
   let templateVars = {
-    user: users[req.cookies[cookieKey]],
-    urls: urlDatabase
+    user: user,
+    urls: urls
   }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
   res.render("urls_index", templateVars);
 });
