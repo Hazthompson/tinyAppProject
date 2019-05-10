@@ -11,7 +11,8 @@
 <body style="font-size:20px; padding:50px;">
   <%- include partials/_header %>
 
-  <% if (user) { %>
+
+<% if (user) { %>
 
     <h3>ShortURL for <%= longURL %></h3>
       <%= shortURL %>
@@ -20,10 +21,10 @@
       <input type="submit">
     </form>
 
-  <% } else { %>
+<% } else { %>
 
     <p>
-      Your need to login to view this page!
+      You need to login to view this page!
       <a href="/login">Please login here</a>
     </p>
 

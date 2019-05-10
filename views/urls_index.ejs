@@ -17,17 +17,19 @@
     <% for (let shortURL in urls) { %>
         <li><%= shortURL %> - <%= urls[shortURL] %> </li>
         <form method="POST" action=<%=`/urls/${shortURL}/delete`%>><button class="btn btn-primary">Delete</button></form>
-
     <% } %>
   </ul>
+
+  <a href="urls/new" > Click here to create new TinyURL! </a>
 
 <% } else { %>
 
   <p>
-    Your need to login or register to view this page!
+    You need to login or register to view this page!
   </p>
 
 <% } %>
+
 
 </body>
 </html>
