@@ -3,13 +3,21 @@ const app = express();
 const PORT = 8080; // default port 8080
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
+const cookieSession = require('cookie-session')
+const cookieParser = require('cookie-parser')
 const bcrypt = require('bcrypt');
 
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cookieParser());
+
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}));
 
 const cookieKey = "user_id";
 
@@ -110,12 +118,14 @@ app.post("/register", (req, res) => {
       password: password
     };
   }
-  res.cookie(cookieKey, id);
+   //res.cookie(cookieKey, id);
+  req.session.user_id = id;
   res.redirect("/urls");
 });
 
 app.get("/urls", (req, res) => {
-  const user = users[req.cookies[cookieKey]];
+  const user = users[req.session.user_id];
+  console.log(user);
 
   let urls;
   if (user) {
@@ -131,7 +141,7 @@ app.get("/urls", (req, res) => {
 app.get("/login", (req, res) => {
   let templateVars = {
     userDatabase: users,
-    user: users[req.cookies[cookieKey]],
+    user: users[req.session.user_id],
     urls: urlDatabase
   };
   res.render("urls_login", templateVars);
@@ -161,7 +171,7 @@ app.post("/login", (req, res) => {
   } else if (!bcrypt.compareSync(password, users[id].password)) {
     res.status(403).send("your email address or password is incorrect!");
   } else {
-    res.cookie(cookieKey, id)
+    req.session.user_id = id;
     res.redirect("/urls");
   }
 
@@ -171,12 +181,12 @@ app.post("/login", (req, res) => {
 
 
 app.post("/logout", (req, res) => {
-  res.clearCookie(cookieKey); //how do i get the name of current cookie?
+  req.session = null
   res.redirect("/urls");
 });
 
 app.get("/urls/new", (req, res) => {
-  const user = users[req.cookies[cookieKey]];
+  const user = users[req.session.user_id];
 
   if (user) {
     let templateVars = { user: user };
@@ -187,7 +197,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const user = users[req.cookies[cookieKey]];
+  const user = users[req.session.user_id];
 
   const newShort = generatedShort();
   urlDatabase[newShort] = {
@@ -212,7 +222,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const user = users[req.cookies[cookieKey]];
+  const user = users[req.session.user_id];
   const shortURL = req.params.shortURL;
   const urlObject = urlDatabase[shortURL];
 
@@ -226,7 +236,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.post("/urls/:shortURL/update", (req, res) => {
-  const user = users[req.cookies[cookieKey]];
+  const user = users[req.session.user_id];
   const shortURL = req.params.shortURL;
   const urlObject = urlDatabase[shortURL];
 
@@ -242,7 +252,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const user = users[req.cookies[cookieKey]];
+  const user = users[req.session.user_id];
   const shortURL = req.params.shortURL;
   const urlObject = urlDatabase[shortURL];
 
