@@ -4,6 +4,7 @@ const PORT = 8080; // default port 8080
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const bcrypt = require('bcrypt');
 
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
@@ -90,7 +91,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const id = generatedShort();
   const email = req.body.email;
-  const password = req.body.password;
+  const password = bcrypt.hashSync(req.body.password,12);
 
   debugger
   if (email === "" || password === "") {
