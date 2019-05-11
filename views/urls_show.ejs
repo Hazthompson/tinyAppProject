@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>TinyApp</title>
-</head>
-<body style="font-size:20px; padding:50px;">
-  <%- include partials/_header %>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>TinyApp</title>
+  </head>
 
+  <body style="font-size:20px; padding:50px;">
+    <%- include partials/_header %>
 
-<% if (user) { %>
+    <% if (user) { %>
 
-    <h3>ShortURL for <%= longURL %></h3>
-      <%= shortURL %>
-    <form method="POST" action=<%=`/urls/${shortURL}/update`%>>
-      <p> Update long URL <input type="text" name="updatedLongURL"> </p>
-      <input type="submit">
-    </form>
-<br/>
-  <a href="/urls" > Click here to all your TinyURLs! </a>
+      <h3>ShortURL for <%= longURL %></h3>
+        <%= shortURL %>
+      <form method="POST" action=<%=`/urls/${shortURL}/update`%>>
+        <p> Update long URL <input type="text" name="updatedLongURL"> </p>
+        <input type="submit">
+      </form>
+      <br/>
+      <a href="/urls" > Click here to all your TinyURLs! </a>
 
-<% } else { %>
+    <% } else { %>
 
-    <p>
-      You need to login to view this page!
-      <a href="/login">Please login here</a>
-    </p>
+      <p>
+        You need to login to view this page!
+        <a href="/login">Please login here</a>
+      </p>
 
-  <% } %>
+    <% } %>
 
-</body>
+  </body>
 </html>

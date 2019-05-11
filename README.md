@@ -4,6 +4,13 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 This project only enables a logged-in user to shorten URLS. URLS are then stored for each indivdual user and can be edited and deleted.
 
+
+## To start
+ To start project:
+ - download dependencies listed below using npm install.
+ - run the development web server using node express_server.js command
+ - go to localhost:8080
+
 ## Final project
 
 !["Screenshot of registration page"](https://github.com/Hazthompson/tinyAppProject/blob/master/docs/registration_page.png?raw=true)

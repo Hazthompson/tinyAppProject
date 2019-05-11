@@ -3,19 +3,19 @@
 
 <% if (locals.user) { %> <!-- getting this from object we created and past in use as KEy -->
 
-<p> Logged in as: <%=user.email%> </p>
+  <p> Logged in as: <%=user.email%> </p>
   <form method="POST" action=<%=`/logout`%>>
     <button class="btn btn-primary"> logout </button>
-    </form>
+  </form>
   <br/>
 
 <% } else { %>
 
-    <p>
-      <a href="/login">Login</a>
-      |
-      <a href="/register">Register</a>
-    </p>
+  <p>
+    <a href="/login">Login</a>
+    |
+    <a href="/register">Register</a>
+  </p>
 
 
 <% } %>
