@@ -215,7 +215,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   } else {
     res.status(401).send("You don't have permisson for this action.");
   }
-
   res.redirect("/urls");
 });
 
@@ -230,7 +229,6 @@ app.post("/urls/:shortURL/update", (req, res) => {
   } else {
     res.status(401).send("You don't have permisson for this action.");
   }
-
   res.redirect("/urls");
 });
 
