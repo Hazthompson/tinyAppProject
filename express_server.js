@@ -18,11 +18,13 @@ app.use(
   })
 );
 
+//Database to store generated shortURLs and their corresponding longURL
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" }
 };
 
+//Database of users and their information.
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -36,6 +38,8 @@ const users = {
   }
 };
 
+//function to generate an object of shortURLs and thier corresponding longURLS that
+//only belong to a specific user (as user in taken in as a arguement)
 function urlsForUser(userId) {
   let urlsObject = {};
   for (let shortURL in urlDatabase) {
@@ -47,7 +51,6 @@ function urlsForUser(userId) {
 }
 
 //function to generate random 6 character code for userID:
-
 let generatedShort = function generateRandomString() {
   let result = "";
   let characters =
@@ -94,6 +97,8 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = bcrypt.hashSync(req.body.password, 12);
 
+//check if email and password already exists in the system (if yes direct them to loging page)
+// if not then new user and corresponding information is created and added to users Database
   if (!email || !password) {
     res.status(400).send("Not Found. Please enter both email & password.");
   } else if (!emailDoesNotExist(users, email)) {
@@ -129,6 +134,9 @@ app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
+//function to get which accepts user database and returns
+//specifc user ID for the user logging in. We used this ID
+//later to check email and password is correct
   function getID(users) {
     for (var key in users) {
       if (users[key].email === email) {
@@ -137,6 +145,9 @@ app.post("/login", (req, res) => {
     }
   }
 
+//check if email adress exists in system -
+//if not direct to registration page. If yes then check the
+//password is correct by verifying matching password to user ID stored in system.
   const id = getID(users);
   if (emailDoesNotExist(users, email)) {
     res
@@ -165,7 +176,8 @@ app.get("/urls", (req, res) => {
 });
 
 
-//to create new URLS. This needs to be defined/ordered before "/urls/:shortURL" so this route works.
+//to create new URLS. This needs to be defined/ordered before "/urls/:shortURL"
+// so this route works.
 app.get("/urls/new", (req, res) => {
   const user = users[req.session.user_id];
 
@@ -221,7 +233,8 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-//to update long URL. keep short URL the same but change it to associate it with different longURL
+//to update long URL. keep short URL the same but change it to associate it with
+// different longURL
 app.post("/urls/:shortURL/update", (req, res) => {
   const user = users[req.session.user_id];
   const shortURL = req.params.shortURL;
