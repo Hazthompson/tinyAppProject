@@ -3,9 +3,9 @@ const app = express();
 const PORT = 8080; // default port 8080
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const cookieSession = require('cookie-session')
-const cookieParser = require('cookie-parser')
-const bcrypt = require('bcrypt');
+const cookieSession = require("cookie-session");
+const cookieParser = require("cookie-parser");
+const bcrypt = require("bcrypt");
 
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
@@ -13,12 +13,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
-
-app.use(cookieSession({
-  name: 'session',
-  keys: ['key1', 'key2']
-}));
-
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["key1", "key2"]
+  })
+);
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "userRandomID" },
@@ -40,7 +40,7 @@ const users = {
 
 function urlsForUser(userId) {
   let urlsObject = {};
- for(let shortURL in urlDatabase ) {
+  for (let shortURL in urlDatabase) {
     if (userId === urlDatabase[shortURL].userID) {
       urlsObject[shortURL] = urlDatabase[shortURL].longURL;
     }
@@ -65,13 +65,16 @@ function emailDoesNotExist(users, email) {
       return false;
     }
   }
-   return true;
+  return true;
 }
 
-
-
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  const user = users[req.session.user_id];
+  if (user) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/urls.json", (req, res) => {
@@ -89,7 +92,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const id = generatedShort();
   const email = req.body.email;
-  const password = bcrypt.hashSync(req.body.password,12);
+  const password = bcrypt.hashSync(req.body.password, 12);
 
   if (email === "" || password === "") {
     res.status(400).send("Not Found. Please enter both email & password.");
@@ -106,7 +109,7 @@ app.post("/register", (req, res) => {
       password: password
     };
   }
-   //res.cookie(cookieKey, id);
+
   req.session.user_id = id;
   res.redirect("/urls");
 });
@@ -136,15 +139,13 @@ app.get("/login", (req, res) => {
   res.render("urls_login", templateVars);
 });
 
-
-
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
   function getID(users) {
     for (var key in users) {
-      console.log('key',key)
+      console.log("key", key);
       if (users[key].email === email) {
         return users[key].id;
       }
@@ -152,7 +153,7 @@ app.post("/login", (req, res) => {
   }
 
   const id = getID(users);
-  console.log('id', id)
+  console.log("id", id);
   if (emailDoesNotExist(users, email)) {
     res
       .status(403)
@@ -163,14 +164,10 @@ app.post("/login", (req, res) => {
     req.session.user_id = id;
     res.redirect("/urls");
   }
-
 });
 
-
-
-
 app.post("/logout", (req, res) => {
-  req.session = null
+  req.session = null;
   res.redirect("/urls");
 });
 
@@ -192,21 +189,25 @@ app.post("/urls", (req, res) => {
   urlDatabase[newShort] = {
     longURL: req.body.longURL,
     userID: user.id
-  }
-  console.log('urlDatabase', urlDatabase);
+  };
+  console.log("urlDatabase", urlDatabase);
   res.redirect("/urls/" + newShort); // Respond with 'Ok' (we will replace this)
 });
 
 app.get("/u/:shortURL", (req, res) => {
   //do i need to link this to anything? currently can only access when typed directly to browser?`
-  console.log(req.params.shortURL);
+const user = users[req.session.user_id];
+console.log(user);
+  const shortURL = req.params.shortURL;
+console.log('short url', shortURL);
 
-  const urlObject = urlDatabase[req.params.shortURL];
+  const urlObject = urlDatabase[user];
+  console.log(urlObject)
 
   if (urlObject) {
-    res.redirect(urlObject.longURL);
+    res.redirect(urlDatabase.longURL);
   } else {
-    res.status(404).send('Not found');
+    res.status(404).send("Not found");
   }
 });
 
@@ -245,7 +246,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const urlObject = urlDatabase[shortURL];
 
-  if (!urlObject) { //look into this again
+  if (!urlObject) {
     res.status(404).send("Short URL not found.");
   } else if (user && urlObject.userID !== user.id) {
     res.status(401).send("You don't have permisson to view this page.");

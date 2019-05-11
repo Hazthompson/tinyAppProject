@@ -16,7 +16,17 @@
   <ul>
     <% for (let shortURL in urls) { %>
         <li><%= shortURL %> - <%= urls[shortURL] %> </li>
-        <form method="POST" action=<%=`/urls/${shortURL}/delete`%>><button class="btn btn-primary">Delete</button></form>
+<style>
+  .clear {
+    clear: both;
+  }
+</style>
+
+        <form method="POST" action=<%=`/urls/${shortURL}/delete`%>><button class="btn btn-primary" >Delete</button></form>
+
+        <form method="GET" action=<%=`/urls/${shortURL}`%>><button class="btn btn-primary">
+        Edit</button></form>
+
     <% } %>
   </ul>
 
