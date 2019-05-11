@@ -190,13 +190,13 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-const user = users[req.session.user_id];
-console.log(user);
+  const user = users[req.session.user_id];
+  console.log(user);
   const shortURL = req.params.shortURL;
-console.log('short url', shortURL);
+  console.log("short url", shortURL);
 
   const urlObject = urlDatabase[user];
-  console.log(urlObject)
+  console.log(urlObject);
 
   if (urlObject) {
     res.redirect(urlDatabase.longURL);

@@ -22,10 +22,10 @@
   }
 </style>
 
-        <form method="POST" action=<%=`/urls/${shortURL}/delete`%>><button class="btn btn-primary" >Delete</button></form>
+        <form method="POST" action=<%=`/urls/${shortURL}/delete`%>><button class="btn btn-primary" >Delete</button> <a href="<%=`/urls/${shortURL}`%>" class="btn btn-primary">
+        Edit</a></form>
 
-        <form method="GET" action=<%=`/urls/${shortURL}`%>><button class="btn btn-primary">
-        Edit</button></form>
+
 
     <% } %>
   </ul>
