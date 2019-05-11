@@ -116,17 +116,14 @@ app.post("/register", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const user = users[req.session.user_id];
-  console.log(user);
-
   let urls;
   if (user) {
     urls = urlsForUser(user.id);
   }
-
   let templateVars = {
     user: user,
     urls: urls
-  }; //when sending variable to EJS template, must always be in object format - even if there is just one key/value so we can call key/value when needed. Again never going to need the key??
+  };
   res.render("urls_index", templateVars);
 });
 
@@ -145,7 +142,6 @@ app.post("/login", (req, res) => {
 
   function getID(users) {
     for (var key in users) {
-      console.log("key", key);
       if (users[key].email === email) {
         return users[key].id;
       }
@@ -153,7 +149,6 @@ app.post("/login", (req, res) => {
   }
 
   const id = getID(users);
-  console.log("id", id);
   if (emailDoesNotExist(users, email)) {
     res
       .status(403)
@@ -191,11 +186,10 @@ app.post("/urls", (req, res) => {
     userID: user.id
   };
   console.log("urlDatabase", urlDatabase);
-  res.redirect("/urls/" + newShort); // Respond with 'Ok' (we will replace this)
+  res.redirect("/urls/" + newShort);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  //do i need to link this to anything? currently can only access when typed directly to browser?`
 const user = users[req.session.user_id];
 console.log(user);
   const shortURL = req.params.shortURL;
@@ -217,7 +211,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const urlObject = urlDatabase[shortURL];
 
   if (user && urlObject.userID === user.id) {
-    delete urlDatabase[shortURL]; // delete from the DB
+    delete urlDatabase[shortURL];
   } else {
     res.status(401).send("You don't have permisson for this action.");
   }
@@ -238,7 +232,6 @@ app.post("/urls/:shortURL/update", (req, res) => {
   }
 
   res.redirect("/urls");
-  //res.render("urls/" + shortURL); //go back to URL page and should show updated long URL
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -253,7 +246,7 @@ app.get("/urls/:shortURL", (req, res) => {
   } else {
     let templateVars = {
       user: user,
-      shortURL: shortURL, //are you ever going to want to access the key? can you do this? or would you only need the value??
+      shortURL: shortURL,
       longURL: urlObject.longURL
     };
     res.render("urls_show", templateVars);
