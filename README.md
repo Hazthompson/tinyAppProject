@@ -16,7 +16,6 @@ This project only enables a logged-in user to shorten URLS. URLS are then stored
 
 - bcrypt
 - body-parser
-- cookie-parser
 - cookie-session
 - ejs
 - express
