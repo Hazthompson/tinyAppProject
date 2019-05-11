@@ -88,7 +88,7 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = bcrypt.hashSync(req.body.password, 12);
 
-  if (email === "" || password === "") {
+  if (!email || !password) {
     res.status(400).send("Not Found. Please enter both email & password.");
   } else if (!emailDoesNotExist(users, email)) {
     res
