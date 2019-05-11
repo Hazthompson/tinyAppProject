@@ -10,17 +10,17 @@
 
 </head>
 <body style="font-size:20px; padding:50px;">
-  <%- include ./partials/_header %>
+  <%- include ./partials/_header %> <!--This enables header to show on this page-->
 
-  <% if (user) { %>
+  <% if (user) { %> <!--implimenting different view for if a user is logged in or not:-->
 
   <ul>
     <% for (let shortURL in urls) { %>
-      <li><%= shortURL %> - <%= urls[shortURL] %> </li>
+      <li><%= shortURL %> - <%= urls[shortURL] %> </li> <!--previously created shortURLs will diplay here (if user is logged in) along with their corresponding longURLs. If none have been created this section will be blank-->
 
       <form method="POST" action=<%=`/urls/${shortURL}/delete`%>>
         <button class="btn btn-primary">Delete</button>
-        <a href="<%=`/urls/${shortURL}`%>" class="btn btn-primary">Edit</a>
+        <a href="<%=`/urls/${shortURL}`%>" class="btn btn-primary">Edit</a>  <!--Link added (styled as button) here to allow 'delete' and 'edit' to appear side by side for styling.-->
       </form>
 
     <% } %>

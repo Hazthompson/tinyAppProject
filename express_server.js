@@ -46,6 +46,8 @@ function urlsForUser(userId) {
   return urlsObject;
 }
 
+//function to generate random 6 character code for userID:
+
 let generatedShort = function generateRandomString() {
   let result = "";
   let characters =
@@ -57,6 +59,7 @@ let generatedShort = function generateRandomString() {
   return result;
 };
 
+//funtion to check if email already exists in database (to redirect to login/registration)
 function emailDoesNotExist(users, email) {
   for (var key in users) {
     if (users[key].email === email) {
@@ -66,6 +69,7 @@ function emailDoesNotExist(users, email) {
   return true;
 }
 
+//Homepage request:
 app.get("/", (req, res) => {
   const user = users[req.session.user_id];
   if (user) {
@@ -75,10 +79,12 @@ app.get("/", (req, res) => {
   }
 });
 
+//URLs in JSON format for for external source to have access to tinyURLs created.
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+//Registration section:
 app.get("/register", (req, res) => {
   res.render("urls_registration");
 });
@@ -108,19 +114,8 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
-app.get("/urls", (req, res) => {
-  const user = users[req.session.user_id];
-  let urls;
-  if (user) {
-    urls = urlsForUser(user.id);
-  }
-  let templateVars = {
-    user: user,
-    urls: urls
-  };
-  res.render("urls_index", templateVars);
-});
 
+//login section:
 app.get("/login", (req, res) => {
   let templateVars = {
     userDatabase: users,
@@ -155,11 +150,22 @@ app.post("/login", (req, res) => {
   }
 });
 
-app.post("/logout", (req, res) => {
-  req.session = null;
-  res.redirect("/urls");
+//existing URL index page (individual for each user based on which the URLs each have created)
+app.get("/urls", (req, res) => {
+  const user = users[req.session.user_id];
+  let urls;
+  if (user) {
+    urls = urlsForUser(user.id);
+  }
+  let templateVars = {
+    user: user,
+    urls: urls
+  };
+  res.render("urls_index", templateVars);
 });
 
+
+//to create new URLS. This needs to be defined/ordered before "/urls/:shortURL" so this route works.
 app.get("/urls/new", (req, res) => {
   const user = users[req.session.user_id];
 
@@ -168,6 +174,18 @@ app.get("/urls/new", (req, res) => {
     res.render("urls_new", templateVars);
   } else {
     res.redirect("/login");
+  }
+});
+
+//redirect to longURL location (e.g. www.google.com) using shortURL ID.
+app.get("/u/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const urlObject = urlDatabase[shortURL];
+
+  if (urlObject) {
+    res.redirect(urlObject.longURL);
+  } else {
+    res.status(404).send("Not found");
   }
 });
 
@@ -183,17 +201,13 @@ app.post("/urls", (req, res) => {
   res.redirect("/urls/" + newShort);
 });
 
-app.get("/u/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-  const urlObject = urlDatabase[shortURL];
-
-  if (urlObject) {
-    res.redirect(urlObject.longURL);
-  } else {
-    res.status(404).send("Not found");
-  }
+//logout section:
+app.post("/logout", (req, res) => {
+  req.session = null;
+  res.redirect("/urls");
 });
 
+//to delete previously created short URLs:
 app.post("/urls/:shortURL/delete", (req, res) => {
   const user = users[req.session.user_id];
   const shortURL = req.params.shortURL;
@@ -207,6 +221,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
+//to update long URL. keep short URL the same but change it to associate it with different longURL
 app.post("/urls/:shortURL/update", (req, res) => {
   const user = users[req.session.user_id];
   const shortURL = req.params.shortURL;
@@ -240,6 +255,7 @@ app.get("/urls/:shortURL", (req, res) => {
   }
 });
 
+//local port enabled.
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

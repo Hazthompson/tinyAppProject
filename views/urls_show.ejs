@@ -10,9 +10,9 @@
   </head>
 
   <body style="font-size:20px; padding:50px;">
-    <%- include partials/_header %>
+    <%- include partials/_header %>  <!--Header shown on page-->
 
-    <% if (user) { %>
+    <% if (user) { %> <!--implimenting different view for if a user is logged in or not:-->
 
       <h3>ShortURL for <%= longURL %></h3>
         <%= shortURL %>
