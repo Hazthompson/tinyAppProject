@@ -4,14 +4,12 @@ const PORT = 8080; // default port 8080
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
-const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cookieParser());
 
 app.use(
   cookieSession({
@@ -190,16 +188,11 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  const user = users[req.session.user_id];
-  console.log(user);
   const shortURL = req.params.shortURL;
-  console.log("short url", shortURL);
-
-  const urlObject = urlDatabase[user];
-  console.log(urlObject);
+  const urlObject = urlDatabase[shortURL];
 
   if (urlObject) {
-    res.redirect(urlDatabase.longURL);
+    res.redirect(urlObject.longURL);
   } else {
     res.status(404).send("Not found");
   }
